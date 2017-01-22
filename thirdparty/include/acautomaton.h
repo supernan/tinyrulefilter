@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <map>
+#include <set>
 #include <vector>
 #include <queue>
 
@@ -24,20 +25,20 @@ namespace tools
 	};
 
 
-	class AC_automation
+	class AC_automaton
 	{
 		public:
 
 			/*构造函数
 			 *初始化字典树根节点
 			 */
-			AC_automation();
+			AC_automaton();
 
 
 			/*析构函数
 			 *释放字典树资源
 			 */
-			~AC_automation();
+			~AC_automaton();
 
 
 			/*文档查询
@@ -52,7 +53,7 @@ namespace tools
 			 *插入所有模式串构造自动机
 			 *arg1:patterns[vector] 要插入的所有模式
 			 */
-			void build_automation(std::vector<std::string> &patterns);
+			void build_automaton(std::set<std::string> &patterns);
 
 
 			/*清除自动机

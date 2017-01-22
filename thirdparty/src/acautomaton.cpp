@@ -1,12 +1,12 @@
 #include "acautomaton.h"
 
-tools::AC_automation::AC_automation()
+tools::AC_automaton::AC_automaton()
 {
 	_root = new Trie();
 }
 
 
-void tools::AC_automation::_destroy_tree(Trie *root)
+void tools::AC_automaton::_destroy_tree(Trie *root)
 {
 	if (root == NULL) //空指针 判断
 		return;
@@ -19,13 +19,13 @@ void tools::AC_automation::_destroy_tree(Trie *root)
 }
 
 
-tools::AC_automation::~AC_automation()
+tools::AC_automaton::~AC_automaton()
 {
 	_destroy_tree(_root);
 }
 
 
-void tools::AC_automation::_insert(Trie *root, std::string &pattern, int id)
+void tools::AC_automaton::_insert(Trie *root, std::string &pattern, int id)
 {
 	Trie *cur = root;
 	for (unsigned int i = 0; i < pattern.length(); ++i)
@@ -39,7 +39,7 @@ void tools::AC_automation::_insert(Trie *root, std::string &pattern, int id)
 }
 
 
-void tools::AC_automation::_build(Trie *root)
+void tools::AC_automaton::_build(Trie *root)
 {
 	std::queue<Trie*> trie_queue;
 	while (!trie_queue.empty())
@@ -75,21 +75,25 @@ void tools::AC_automation::_build(Trie *root)
 }
 
 
-void tools::AC_automation::build_automation(std::vector<std::string> &patterns)
+void tools::AC_automaton::build_automaton(std::set<std::string> &patterns)
 {
-	for (unsigned int i = 0; i < patterns.size(); ++i)
+    std::set<std::string>::iterator it;
+    int count = 0;
+	for (it = patterns.begin(); it != patterns.end(); ++it)
 	{
-		_visit[i] = 0;
-		_insert(_root, patterns[i], i);
-		_id_pattern_map[i] = patterns[i];
+		//_visit[i] = 0;
+        std::string pattern = *it;
+		_insert(_root, pattern, count);
+		_id_pattern_map[count] = *it;
+        count++;
 	}
 	_build(_root);
 }
 
 
-std::map<int, std::string> tools::AC_automation::query(std::string &text)
+std::map<int, std::string> tools::AC_automaton::query(std::string &text)
 {
-	_visit.clear(); //TODO(zhounan) 全赋值为0 or 清空
+	//_visit.clear(); //TODO(zhounan) 全赋值为0 or 清空
 	int ret = 0;
 	std::map<int, std::string> match_patterns;
 	Trie *cur = _root;
@@ -106,7 +110,7 @@ std::map<int, std::string> tools::AC_automation::query(std::string &text)
 			if (tmp->pattern_id != -1 /*&&_visit[tmp->pattern_id] == 0*/)
 			{
 				ret += tmp->count;
-				_visit[tmp->pattern_id] = 1;
+				//_visit[tmp->pattern_id] = 1;
 				//match_patterns[tmp->pattern_id] = _id_pattern_map[tmp->pattern_id];
 				match_patterns[i] = _id_pattern_map[tmp->pattern_id];
 			}
@@ -117,10 +121,10 @@ std::map<int, std::string> tools::AC_automation::query(std::string &text)
 }
 
 
-void tools::AC_automation::clear()
+void tools::AC_automaton::clear()
 {
 	_destroy_tree(_root);
 	_root = new Trie();
 	_id_pattern_map.clear();
-	_visit.clear();
+	//_visit.clear();
 }

@@ -1,18 +1,26 @@
 #include <set>
 #include <iostream>
 #include "acautomaton.h"
-//#include "ruleanalysis.h"
-//#include "filterengine.h"
+#include "ruleanalysis.h"
+#include "filterengine.h"
 
 using namespace std;
 using namespace tools;
+using namespace tinyrulefilter;
 
 
 int main()
 {
-    vector<string> words;
-    words.push_back("abc");
-    words.push_back("efg");
+    set<string> words;
+    string s = "([b]|(~([aa]^([ab]|[bc]))^[aa]))";
+    FilterEngine f;
+    /*f.__GetWordsFromRule(s, words);
+    set<string>::iterator it;
+    for (it = words.begin(); it != words.end(); ++it)
+        cout<<*it<<endl;*/
+
+    /*words.insert("abc");
+    words.insert("efg");
 	AC_automation ac;
     ac.build_automation(words);
     map<int, string> ret;
@@ -20,7 +28,7 @@ int main()
     ret = ac.query(s);
     map<int, string>::iterator it;
     for (it = ret.begin(); it != ret.end(); ++it)
-        cout<<it->first<<" "<<it->second<<endl;
+        cout<<it->first<<" "<<it->second<<endl;*/
 
     /*std::set<std::string> words;
     words.insert("a");

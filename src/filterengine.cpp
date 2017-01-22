@@ -2,6 +2,76 @@
 
 using namespace tinyrulefilter;
 
+FilterEngine::FilterEngine()
+{
+    m_pAC = new AC_automaton();
+}
+
+
+FilterEngine::~FilterEngine()
+{
+    delete m_pAC;
+}
+
+bool FilterEngine::BuildFilter(std::vector<std::string> &rules)
+{
+    if (rules.empty())
+    {
+        LOG(ERROR) << "Error in BuildFilter: rules empty" << std::endl;
+        return false;
+    }
+    m_vRules.clear();
+    std::vector<std::string>().swap(m_vRules);
+    m_vRules = rules;
+    std::set<std::string> words;
+    for (int i = 0; i < m_vRules.size(); i++)
+    {
+        if (!__GetWordsFromRule(m_vRules[i], words))
+        {
+            LOG(WARNING) << "Error in BuildFilter : __GetWordsFromRule Failed skip" << std::endl;
+            continue;
+        }
+    }
+    m_pAC->build_automaton(words);
+    return true;
+}
+
+bool FilterEngine::__GetWordsFromRule(std::string &rule, std::set<std::string> &words)
+{
+    int nSize = rule.length();
+    if (nSize == 0)
+    {
+        LOG(WARNING) << "Error in __GetWordsFromRule: rule is empty" << std::endl;
+        return false;
+    }
+    if (!__CheckRule(rule))
+    {
+        LOG(WARNING) << "Error in __GetWordsFromRule: rule is invalid " << rule << std::endl;
+        return false;
+    }
+    std::stack<char> charsStack;
+    for (int i = nSize-1; i >= 0; i--)
+    {
+        char val = rule[i];
+        charsStack.push(val);
+        if (val == '[')
+        {
+            std::string word = "";
+            charsStack.pop();
+            while (!charsStack.empty())
+            {
+                char top = charsStack.top();
+                charsStack.pop();
+                if (top == ']')
+                    break;
+                word += top;
+            }
+            words.insert(word);
+        }
+    }
+    return true;
+}
+
 
 bool FilterEngine::__CheckRule(std::string &rule)
 {
