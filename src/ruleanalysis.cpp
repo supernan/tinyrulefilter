@@ -170,7 +170,8 @@ bool RuleAnalyzer::RuleAnalysis(std::string rule, bool &bRes, std::string &sErrI
                 }
             }
         }
-        else
+        else if (elem == '(' || elem == ')' || elem == '0'
+                 || elem == '1')
         {
             numsStack.push(elem);
         }

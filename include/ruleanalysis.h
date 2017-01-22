@@ -1,3 +1,6 @@
+#ifndef _RULE_ANALYZER_H_
+#define _RULE_ANALYZER_H_
+
 #include <iostream>
 #include <stack>
 
@@ -82,3 +85,4 @@ namespace tinyrulefilter
 
     };
 }
+#endif
