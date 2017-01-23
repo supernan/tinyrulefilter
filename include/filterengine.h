@@ -7,6 +7,7 @@
 #include <vector>
 #include "glog/logging.h"
 #include "acautomaton.h"
+#include "ruleanalysis.h"
 
 using namespace tools;
 
@@ -28,7 +29,27 @@ namespace tinyrulefilter
             FilterEngine();
             ~FilterEngine();
 
+            /*
+             * \fn > BuildFilter
+             * \breif > build filter engine
+             * \param[in] rules > rules to build filter
+             * \ret bool > whether function is succeed
+             * \date > 2017/1
+             * \author > zhounan(zhounan@software.ict.ac.cn)
+             */
             bool BuildFilter(std::vector<std::string> &rules);
+
+
+            /*
+             * \fn > FilterDocs
+             * \breif > filter docs
+             * \param[in] vDocs > docs to filter
+             * \param[out] mRule2Doc > rule_id -> {d1, d2, ...}
+             * \ret bool > whether function is succeed
+             * \date > 2017/1
+             * \author > zhounan(zhounan@software.ict.ac.cn)
+             */
+            bool FilterDocs(std::vector<std::string> &vDocs, std::map<int, std::vector<int> > &mRule2Doc);
 
         private:
 
@@ -109,6 +130,19 @@ namespace tinyrulefilter
              */
             bool __GetHitDocs(std::map<int, std::string> &mMatchRes, std::vector<int> &vPos,
                               std::map<int, std::set<std::string> > &mDoc2Words);
+
+
+            /*
+             * \fn > __FilterByRule
+             * \breif > filter doc by rule after  query
+             * \param[in] mDoc2Words > query result
+             * \param[out] mRule2Doc > rule_id -> {d1, d2, ..}
+             * \ret bool > whether function succeed
+             * \date > 2017/1
+             * \author > zhounan(zhounan@software.ict.ac.cn)
+             */
+            bool __FilterByRule(std::map<int, std::set<std::string> > &mDoc2Words,
+                                std::map<int, std::vector<int> > &mRule2Doc);
 
         private:
             // acautomaton ptr
