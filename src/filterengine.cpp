@@ -100,17 +100,17 @@ bool FilterEngine::__CheckRule(std::string &rule)
 
 
 bool FilterEngine::__RuleFormat(std::string &src, std::string &dst,
-                std::set<std::string> &wordsTable, std::string& sErrInfo)
+                std::set<std::string> &wordsTable)
 {
     int nSize = src.length();
     if (nSize == 0)
     {
-        sErrInfo = "Error in RuleFormat: source rule is empty";
+        LOG(WARNING) << "Error in RuleFormat: source rule is empty" <<std::endl;
         return false;
     }
     if (!__CheckRule(src))
     {
-        sErrInfo = "Error in RuleFormat: source rule is invalid " + src;
+        LOG(WARNING) << "Error in RuleFormat: source rule is invalid " << src << std::endl;
         return false;
     }
     dst = "";
@@ -140,4 +140,59 @@ bool FilterEngine::__RuleFormat(std::string &src, std::string &dst,
             nPos++;
     }
     return true;
+}
+
+
+bool FilterEngine::__BuildDocStream(std::vector<std::string> &vDocs, std::string &sDocStream,
+                                    std::vector<int> &vPos)
+{
+    if (vDocs.empty())
+    {
+        LOG(WARNING) << "Error in __BuildDocStream: Docs empty" << std::endl;
+        return false;
+    }
+    vPos.clear();
+    sDocStream = "";
+    for (int i = 0; i < vDocs.size(); i++)
+    {
+        if (vDocs[i].length() == 0)
+            continue;
+        sDocStream += vDocs[i];
+        sDocStream += "||";
+        int nOffset = sDocStream.length();
+        vPos.push_back(nOffset);
+    }
+    return true;
+}
+
+
+bool FilterEngine::__SearchDocIdx(std::vector<int> &vPos, int nOffset, int &nDocIdx)
+{
+    if (vPos.empty())
+    {
+        LOG(WARNING) << "Error in __SearchDocIdx: vPos empty" << std::endl;
+        nDocIdx = -1;
+        return false;
+    }
+    int nLeft = 0;
+    int nRight = vPos.size() - 1;
+    while (nLeft <= nRight)
+    {
+        int nMid = (nLeft + nRight) / 2;
+        if (vPos[nMid] < nOffset)
+            nLeft = nMid + 1;
+        else
+            nRight = nMid - 1;
+    }
+    if (nLeft < vPos.size())
+    {
+        nDocIdx = nLeft;
+        return true;
+    }
+    else
+    {
+        LOG(WARNING) << "Error in __SearchDocIdx: Doc not found" << std::endl;
+        nDocIdx = -1;
+        return false;
+    }
 }

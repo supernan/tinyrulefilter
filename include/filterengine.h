@@ -62,13 +62,53 @@ namespace tinyrulefilter
              * \param[in] src > source rule
              * \param[out] dst > destination rule
              * \param[in] wordsTable > words hit by doc
-             * \param[out] sErrInfo > error info
              * \ret bool > whether rule is valid
              * \date > 2017/1
              * \author > zhounan(zhounan@software.ict.ac.cn)
              */
             bool __RuleFormat(std::string &src, std::string &dst,
-                              std::set<std::string> &wordsTable, std::string& sErrInfo);
+                              std::set<std::string> &wordsTable);
+
+
+            /*
+             * \fn > __BuildDocStream
+             * \breif > change doc vector to docstream before filter
+             * \param[in] vDocs > docs
+             * \param[out] sDocStream > string of docstream
+             * \param[out] vPos > vector to store positions of each doc
+             * \ret bool > whether function succeed
+             * \date > 2017/1
+             * \author > zhounan(zhounan@software.ict.ac.cn)
+             */
+            bool __BuildDocStream(std::vector<std::string> &vDocs, std::string &sDocStream,
+                                  std::vector<int> &vPos);
+
+
+            /*
+             * \fn > __SearchDocIdx
+             * \breif > search doc idx with doc offset
+             * \param[in] vPos > doc offset vector
+             * \param[in] nOffset > the position of matched keyword
+             * \param[out] nDocIdx > doc idx of matched doc
+             * \ret bool > whether function succeed
+             * \date > 2017/1
+             * \author > zhounan(zhounan@software.ict.ac.cn)
+             */
+            bool __SearchDocIdx(std::vector<int> &vPos, int nOffset, int &nDocIdx);
+
+
+            /*
+             * \fn > __GetHitDocs
+             * \breif > get hit docs after query
+             * \param[in] mMatchRes > query result
+             * \param[in] vPos > position of docs
+             * \param[out] mDoc2Words > docid -> {w1, w2, w3...}
+             * \ret bool > whether function succeed
+             * \date > 2017/1
+             * \author > zhounan(zhounan@software.ict.ac.cn)
+             */
+            bool __GetHitDocs(std::map<int, std::string> &mMatchRes, std::vector<int> &vPos,
+                              std::map<int, std::set<std::string> > &mDoc2Words);
 
         private:
             // acautomaton ptr
