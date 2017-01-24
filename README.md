@@ -6,3 +6,10 @@
 * demo 示例代码
 
 ##运行方法
+* clone代码到本地
+* cd tinyrulefilter
+* mkdir build
+* mkdir lib
+* cd build
+* cmake ..
+* 运行以上步骤可完成项目编译，生成的库在lib下，示例在demo下
