@@ -21,6 +21,7 @@ bool FilterEngine::BuildFilter(std::vector<std::string> &rules)
         return false;
     }
     m_vRules.clear();
+    m_pAC->clear();
     std::vector<std::string>().swap(m_vRules);
     m_vRules = rules;
     std::set<std::string> words;
