@@ -71,7 +71,7 @@ bool RuleAnalyzer::Char2Boolean(char ch, bool &bRes)
 
 bool RuleAnalyzer::ComputeExp(std::stack<char> &numsStack, std::stack<char> &optsStack)
 {
-    DebugPrint(numsStack, optsStack);
+    //DebugPrint(numsStack, optsStack);
     if (numsStack.empty())
     {
         LOG(WARNING) << "Error in ComputeExp: numsStack is empty" << std::endl;
