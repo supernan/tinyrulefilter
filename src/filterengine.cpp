@@ -67,6 +67,7 @@ bool FilterEngine::__GetWordsFromRule(std::string &rule, std::set<std::string> &
                     break;
                 word += top;
             }
+            //std::cout<<word<<std::endl;
             words.insert(word);
         }
     }
@@ -131,15 +132,18 @@ bool FilterEngine::__RuleFormat(std::string &src, std::string &dst,
             while (nOffset < nSize && src[nOffset] != ']')
                 nOffset++;
             std::string word = src.substr(nPos+1, nOffset-nPos-1);
+            //std::cout<<"check "<<word<<std::endl;
             if (wordsTable.find(word) != wordsTable.end())
                 dst += '1';
             else
                 dst += '0';
             nPos = nOffset + 1;
+            //std::cout<<dst<<std::endl;
         }
         else
             nPos++;
     }
+    //std::cout<<dst<<std::endl;
     return true;
 }
 
@@ -199,7 +203,7 @@ bool FilterEngine::__SearchDocIdx(std::vector<int> &vPos, int nOffset, int &nDoc
 }
 
 
-bool FilterEngine::__GetHitDocs(std::map<int, std::string> &mMatchRes, std::vector<int> &vPos,
+bool FilterEngine::__GetHitDocs(std::vector< std::map<std::string, int> > &mMatchRes, std::vector<int> &vPos,
                   std::map<int, std::set<std::string> > &mDoc2Words)
 {
     if (mMatchRes.empty())
@@ -207,17 +211,21 @@ bool FilterEngine::__GetHitDocs(std::map<int, std::string> &mMatchRes, std::vect
         LOG(INFO) << "No docs hit in __GetHitDocs" << std::endl;
         return false;
     }
-    std::map<int, std::string>::iterator it;
-    for (it = mMatchRes.begin(); it != mMatchRes.end(); it++)
+    for (int i = 0; i < mMatchRes.size(); i++)
     {
-        int nOffset = it->first;
-        std::string word = it->second;
+        std::map<std::string, int>::iterator it;
+        std::map<std::string, int> pattern_res = mMatchRes[i];
+        it = pattern_res.begin();
+        int nOffset = it->second;
+        std::string word = it->first;
+        //std::cout<<"match word "<<word<<std::endl;
         int nDocIdx = -1;
         if (!__SearchDocIdx(vPos, nOffset, nDocIdx))
         {
             LOG(WARNING) << "Error in __GetHitDocs: find doc failed" << std::endl;
             continue;
         }
+        //std::cout<<"doc id "<<nDocIdx<<std::endl;
         if (mDoc2Words.find(nDocIdx) == mDoc2Words.end())
         {
             std::set<std::string> words;
@@ -291,11 +299,14 @@ bool FilterEngine::FilterDocs(std::vector<std::string> &vDocs, std::map<int, std
         LOG(ERROR) << "Error in FilterDocs: build docstream failed" << std::endl;
         return false;
     }
-    std::map<int, std::string> mMatchRes = m_pAC->query(sDocStream);
+    //sDocStream = "子弹六四";
+    std::vector<std::map<std::string, int> > mMatchRes = m_pAC->query(sDocStream);
+    //std::cout<<sDocStream<<std::endl;
+    //std::cout<<mMatchRes.size()<<std::endl;
     std::map<int, std::set<std::string> > mDoc2Words;
     if (!__GetHitDocs(mMatchRes, vPos, mDoc2Words))
     {
-        LOG(ERROR) << "Error in FilterDocs: __GetHitDocs failed" << std::endl;
+        LOG(INFO) << "Error in FilterDocs: __GetHitDocs failed" << std::endl;
         return false;
     }
     if (!__FilterByRule(mDoc2Words, mRule2Doc))

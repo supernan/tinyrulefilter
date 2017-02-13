@@ -81,7 +81,7 @@ void tools::AC_automaton::build_automaton(std::set<std::string> &patterns)
     int count = 0;
 	for (it = patterns.begin(); it != patterns.end(); ++it)
 	{
-		//_visit[i] = 0;
+		_visit[count] = 0;
         std::string pattern = *it;
 		_insert(_root, pattern, count);
 		_id_pattern_map[count] = *it;
@@ -91,11 +91,12 @@ void tools::AC_automaton::build_automaton(std::set<std::string> &patterns)
 }
 
 
-std::map<int, std::string> tools::AC_automaton::query(std::string &text)
+std::vector<std::map<std::string, int> > tools::AC_automaton::query(std::string &text)
 {
-	//_visit.clear(); //TODO(zhounan) 全赋值为0 or 清空
+	_visit.clear(); //TODO(zhounan) 全赋值为0 or 清空
 	int ret = 0;
-	std::map<int, std::string> match_patterns;
+    //:wqstd::cout<<"text size "<<text.size()<<std::endl;
+	std::vector<std::map<std::string, int> > match_patterns;
 	Trie *cur = _root;
 	for (unsigned int i = 0; i < text.length(); ++i)
 	{
@@ -110,13 +111,18 @@ std::map<int, std::string> tools::AC_automaton::query(std::string &text)
 			if (tmp->pattern_id != -1 /*&&_visit[tmp->pattern_id] == 0*/)
 			{
 				ret += tmp->count;
-				//_visit[tmp->pattern_id] = 1;
-				//match_patterns[tmp->pattern_id] = _id_pattern_map[tmp->pattern_id];
-				match_patterns[i] = _id_pattern_map[tmp->pattern_id];
+				_visit[tmp->pattern_id] = 1;
+                std::string pattern = _id_pattern_map[tmp->pattern_id];
+                int end = i;
+                std::map<std::string, int> pattern_res;
+                pattern_res[pattern] = end;
+                match_patterns.push_back(pattern_res);
+				//match_patterns[i] = _id_pattern_map[tmp->pattern_id];
 			}
 			tmp = tmp->fail;
 		}
 	}
+    //std::cout<<"all match "<<match_patterns.size()<<std::endl;
 	return match_patterns;
 }
 
@@ -126,5 +132,5 @@ void tools::AC_automaton::clear()
 	_destroy_tree(_root);
 	_root = new Trie();
 	_id_pattern_map.clear();
-	//_visit.clear();
+	_visit.clear();
 }

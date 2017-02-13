@@ -128,7 +128,7 @@ namespace tinyrulefilter
              * \date > 2017/1
              * \author > zhounan(zhounan@software.ict.ac.cn)
              */
-            bool __GetHitDocs(std::map<int, std::string> &mMatchRes, std::vector<int> &vPos,
+            bool __GetHitDocs(std::vector< std::map<std::string, int> > &mMatchRes, std::vector<int> &vPos,
                               std::map<int, std::set<std::string> > &mDoc2Words);
 
 

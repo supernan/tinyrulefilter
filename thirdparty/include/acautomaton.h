@@ -46,7 +46,7 @@ namespace tools
 			 *arg1:text[string] 要查询的文本
 			 *ret[map] 返回匹配到的模式id与模式串的映射
 			 */
-			std::map<int, std::string> query(std::string &text);
+			std::vector< std::map<std::string, int> > query(std::string &text);
 
 
 			/*构造自动机
