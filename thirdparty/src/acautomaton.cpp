@@ -114,6 +114,8 @@ std::vector<std::map<std::string, int> > tools::AC_automaton::query(std::string 
 				_visit[tmp->pattern_id] = 1;
                 std::string pattern = _id_pattern_map[tmp->pattern_id];
                 int end = i;
+                int size = pattern.size();
+                //std::cout<<pattern<<" "<<text.substr(i-size+1, size)<<std::endl;
                 std::map<std::string, int> pattern_res;
                 pattern_res[pattern] = end;
                 match_patterns.push_back(pattern_res);

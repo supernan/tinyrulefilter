@@ -160,8 +160,8 @@ bool FilterEngine::__BuildDocStream(std::vector<std::string> &vDocs, std::string
     sDocStream = "";
     for (int i = 0; i < vDocs.size(); i++)
     {
-        if (vDocs[i].length() == 0)
-            continue;
+        //if (vDocs[i].length() == 0)
+        //    continue;
         sDocStream += vDocs[i];
         sDocStream += "||";
         int nOffset = sDocStream.length();
